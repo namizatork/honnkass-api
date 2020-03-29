@@ -33,6 +33,28 @@ module Honnkass
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
 
+    # 基本言語を日本語
+    config.i18n.default_locale = :ja
+
+    # TimeZone関係も日本
+    config.time_zone = 'Asia/Tokyo'
+    config.active_record.default_timezone = :local
+
+    config.generators do |g|
+      # CSS/JSファイル不要(APIモードだし入れなくても生成されないかも)
+      g.assets false
+      # Helper不要(APIモードだし入れなくても生成されないかも)
+      g.helper false
+      # Rspecに関する設定
+      g.test_framework :rspec,
+                       view_specs: false,
+                       helper_specs: false,
+                       routing_specs: false,
+                       controller_specs: false,
+                       request_specs: true,
+                       fixtures: true
+    end
+
     # CrossOriginの許可
     config.middleware.insert_before 0, Rack::Cors do
       allow do
@@ -43,5 +65,7 @@ module Honnkass
       end
     end
     config.api_only = true
+    # APIモードだとflashメソッドないんですけど？ってよく怒られるので入れておく
+    config.middleware.use ActionDispatch::Flash
   end
 end
